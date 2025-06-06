@@ -1,0 +1,5 @@
+
+deposited: 100
+Amount withdrawn :  10
+deposited: 100
+Amount withdrawn :  10
