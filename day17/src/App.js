@@ -2,9 +2,12 @@ import logo from './logo.svg';
 import Cricket from './componet/Cricket';
 
 function App(){
+  const props = {
+    totalOvers: 20
+  };
   return(
     <div>
-      <Cricket/>
+      <Cricket  props={props}/>
      </div>
   );
 }

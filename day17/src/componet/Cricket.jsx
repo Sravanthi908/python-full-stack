@@ -1,83 +1,69 @@
 import React, { useState } from 'react';
+import RemainingOvers from './RemainingOvers'; 
 
-const Cricket = () => {
+const Cricket = ({ props }) => {
+  const { totalOvers } = props;
   const [runs, setRuns] = useState(0);
   const [wickets, setWickets] = useState(0);
-  const [balls, setBalls] = useState(0);
+  const [ball, setBall] = useState(0);
 
-  const ballsPerOver = 6; 
-  const maxOvers = 20;
-  const maxBalls = ballsPerOver * maxOvers; 
-  const maxWickets = 10;
+  const totalBalls = totalOvers * 6;
+  const remainingBalls = totalBalls - ball;
 
-  const isAllOut = wickets >= maxWickets;
-  const isOverComplete = balls >= maxBalls;
-  
-  let matchOver;
-if (isAllOut) {
-  matchOver = true;
-} else {
-  matchOver = isOverComplete;
-};
+  let allOut = 0;
+if (wickets == 10) {
+  allOut = 1;
+}
+;
+  let allOvers = 0;
+if (ball == totalBalls) {
+  allOvers = 1;
+}
 
-  const addRuns = (run) => {
-    if (matchOver) return;
+  const gameEnded = allOut + allOvers;
 
-    setRuns(runs + run);
-    updateBall();
+  const over = parseInt(ball / 6);
+  const currentBall = ball % 6; 
+
+  const remainingOver = parseInt(remainingBalls / 6);
+  const remainingBall = remainingBalls % 6;
+
+  const handleScore = (score) => {
+    const play= (1 - gameEnded);
+    setRuns(runs + (play * score));
+    setBall(ball + play);
   };
 
-  const addWicket = () => {
-    if (matchOver) return;
-
-    const newWickets = wickets + 1;
-    setWickets(newWickets);
-    updateBall();
-
-    if (newWickets >= maxWickets) {
-      alert('All Out!');
-    }
-  };
-
-  const updateBall = () => {
-    const newBalls = balls + 1;
-    setBalls(newBalls);
-
-    if (newBalls >= maxBalls && isAllOut) {
-      alert('Overs Complete!');
-    }
-  };
-
-  const getOvers = () => {
-    const over = (balls / ballsPerOver);
-    const ball = balls % ballsPerOver;
-    return over + '.' + ball;
-  };
-
-  const getRemaining = () => {
-    const remBalls = maxBalls - balls;
-    const remOvers = (remBalls / ballsPerOver);
-    const remBall = remBalls % ballsPerOver;
-    return remOvers + '.' + remBall;
+  const handleWicket = () => {
+    
+    const play = (1 - gameEnded);
+    setWickets(wickets + play);
+    setBall(ball + play);
+   
   };
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'Arial' }}>
-      <h1> Match Score </h1>
+    <div>
       <h2>Score: {runs}/{wickets}</h2>
-      <h3>Overs: {getOvers()} / 20</h3>
-      <h4>Remaining: {getRemaining()} overs</h4>
+     
+      <h2>Overs: {over}.{currentBall}</h2>
+      
 
-      {!matchOver && (
-        <div style={{ margin: '20px ' }}>
-          <button onClick={() => addRuns(6)}>Six</button>
-          <button onClick={() => addRuns(4)}>Four</button>
-          <button onClick={() => addRuns(2)}>Two</button>
-          <button onClick={() => addRuns(3)}>Three</button>
-          <button onClick={() => addRuns(1)}>One</button>
-          <button onClick={addWicket}>Wicket</button>
+      <RemainingOvers props={{ totalOvers: totalOvers, ball: ball }} />
+
+      {gameEnded == 0 && 
+        <div style={{ margin: '20px' }}>
+          <button onClick={() => handleScore(6)}>Six</button>
+          <button onClick={() => handleScore(4)}>Four</button>
+          <button onClick={() => handleScore(3)}>Three</button>
+          <button onClick={() => handleScore(2)}>Two</button>
+          <button onClick={() => handleScore(1)}>One</button>
+          <button onClick={() => handleWicket()}>Wicket</button>
         </div>
-      )}
+      
+      
+     };
+      
     </div>
   );
 };
